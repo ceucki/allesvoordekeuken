@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebFilter;
 @WebFilter("*.htm")
 public class JPAFilter implements Filter {
 private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("allesvoordekeuken");
+private static final ThreadLocal<EntityManager> entityManagers = new ThreadLocal<>();
     /**
      * Default constructor. 
      */
@@ -37,8 +38,19 @@ private static final EntityManagerFactory entityManagerFactory = Persistence.cre
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		chain.doFilter(request, response);
+		entityManagers.set(entityManagerFactory.createEntityManager());
+		try{
+			request.setCharacterEncoding("UTF-8");
+			chain.doFilter(request, response);
+		} finally{
+			EntityManager entityManager = entityManagers.get();
+			if (entityManager.getTransaction().isActive()) {
+				entityManager.getTransaction().rollback();
+			}
+			entityManager.close();
+			entityManagers.remove();
+		}
+		
 	}
 
 	/**
@@ -49,6 +61,6 @@ private static final EntityManagerFactory entityManagerFactory = Persistence.cre
 	}
 
 	public static EntityManager getEntityManager() {
-		return entityManagerFactory.createEntityManager();
+		return entityManagers.get();
 	}
 }
