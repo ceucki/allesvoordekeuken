@@ -1,5 +1,8 @@
 package be.vdab.services;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import be.vdab.dao.ArtikelDAO;
 import be.vdab.entities.Artikel;
 
@@ -16,5 +19,18 @@ public class ArtikelService {
 		artikelDAO.beginTransaction();
 		artikelDAO.create(artikel);
 		artikelDAO.commit();
+	}
+	
+	public List<Artikel> zoekWoordOpNaam(String woord){
+		return artikelDAO.zoekWoordOpNaam(woord);
+	}
+
+	public void algemenePrijsverhoging(BigDecimal percentage) {
+		BigDecimal factor = BigDecimal.ONE.add(percentage.divide(BigDecimal
+				.valueOf(100)));
+		artikelDAO.beginTransaction();
+		artikelDAO.algemenePrijsverhoging(factor);
+		artikelDAO.commit();
+		
 	}
 }

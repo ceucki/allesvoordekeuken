@@ -16,10 +16,10 @@
 Artikel niet gevonden
 </c:if>
 	<c:if test='${not empty artikel}'>
-<li>naam: ${artikel.naam}</li>
-<li>aankoopprijs: ${artikel.aankoopprijs}</li>
-<li>verkoopprijs: ${artikel.verkoopprijs}</li>
-<li>%winst: ${artikel.winstPercentage}</li>
+		<li>naam: ${artikel.naam}</li>
+		<li>aankoopprijs: ${artikel.aankoopprijs}</li>
+		<li>verkoopprijs: ${artikel.verkoopprijs}</li>
+		<li>%winst: ${artikel.winstPercentage}</li>
 	</c:if>
 </body>
 </html>

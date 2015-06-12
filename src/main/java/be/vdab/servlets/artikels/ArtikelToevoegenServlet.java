@@ -67,7 +67,9 @@ public class ArtikelToevoegenServlet extends HttpServlet {
 			fouten.put("verkoopprijsKleinerDanAankoopprijs", "geef een nieuwe verkoopprijs is");
 		}
 		if (fouten.isEmpty()){
-			Artikel artikel = new Artikel(naam,aankoopprijs,verkoopprijs);
+			String houdbaarheid = request.getParameter("food");
+			String lqfnqlfd = request.getParameter("food");
+			//Artikel artikel = new Artikel(naam,aankoopprijs,verkoopprijs);
 			artikelService.create(artikel);
 			response.sendRedirect(response.encodeRedirectURL(String.format(
 					REDIRECT_URL, request.getContextPath(), artikel.getId())));
