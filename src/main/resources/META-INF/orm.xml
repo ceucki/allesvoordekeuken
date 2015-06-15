@@ -14,5 +14,8 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 update Artikel d
 set d.verkoopprijs = d.verkoopprijs * :factor
 </query>
-</named-query>
+	</named-query>
+	<named-query name="Artikel.findAll">
+		<query> select d from Artikel d order by d.naam</query>
+	</named-query>
 </entity-mappings>

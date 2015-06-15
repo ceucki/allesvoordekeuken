@@ -1,5 +1,7 @@
 package be.vdab.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -18,7 +20,22 @@ public class NonFoodArtikel extends Artikel {
 	}
 
 	public void setGarantie(int garantie) {
+		if(!isGarantieValid(garantie)){
+			throw new IllegalArgumentException();
+		}
 		this.garantie = garantie;
 	}
 
+	protected NonFoodArtikel() {
+	};
+
+	public NonFoodArtikel(String naam, BigDecimal aankoopprijs,
+			BigDecimal verkoopprijs, int garantie) {
+		super(naam, aankoopprijs, verkoopprijs);
+		setGarantie(garantie);
+	};
+	
+	public static boolean isGarantieValid(int garantie) {
+		return garantie >= 0;
+		}
 }

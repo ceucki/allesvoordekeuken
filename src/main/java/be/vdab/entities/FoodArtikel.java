@@ -1,5 +1,7 @@
 package be.vdab.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -18,6 +20,19 @@ public class FoodArtikel extends Artikel {
 	}
 
 	public void setHoudbaarheid(int houdbaarheid) {
+		if(! isHoudbaarheidValid(houdbaarheid)){
+			throw new IllegalArgumentException();
+		}
 		this.houdbaarheid = houdbaarheid;
+	}
+	
+	public FoodArtikel(String naam, BigDecimal aankoopprijs, BigDecimal verkoopprijs, int houdbaarheid){
+		super(naam, aankoopprijs, verkoopprijs);
+		setHoudbaarheid(houdbaarheid);		
+	}
+	protected FoodArtikel(){};
+	
+	public static boolean isHoudbaarheidValid(int houdbaarheid){
+		return houdbaarheid >= 1;		
 	}
 }

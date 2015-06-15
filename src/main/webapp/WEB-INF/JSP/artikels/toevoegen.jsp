@@ -16,11 +16,11 @@
 		</label> <label>Verkoopprijs: <span>${fouten.verkoopprijs}${fouten.verkoopprijsKleinerDanAankoopprijs}</span>
 			<input name="verkoopprijs" value="${param.verkoopprijs}" autofocus
 			required type="number" min='0' step='0.01'></label> <label><input
-			type='radio' name="food" /> Food</label><br /> <label>Houdbaarheid:
+			type='radio' name="soort" id="food" value='F' /> Food</label><br /> <label>Houdbaarheid:
 			<span>${fouten.houdbaarheid }</span> <input name="houdbaarheid"
 			value="${param.houdbaarheid}" />
-		</label> <label><input type='radio' name="nonFood" /> Non-Food</label><br />
-		<label>Garantie: <span>${fouten.garantie}</span><input
+		</label> <label><input type='radio' name="soort" value='NF'
+			id="nonfood" /> Non-Food</label><br /> <label>Garantie: <span>${fouten.garantie}</span><input
 			name="garantie" value="${param.garantie}" />
 		</label> <input type='submit' value='Toevoegen' id='toevoegknop'>
 	</form>

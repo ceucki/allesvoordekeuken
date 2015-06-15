@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import be.vdab.entities.Artikel;
+import be.vdab.entities.FoodArtikel;
+import be.vdab.entities.NonFoodArtikel;
 import be.vdab.services.ArtikelService;
 
 /**
@@ -63,20 +65,62 @@ public class ArtikelToevoegenServlet extends HttpServlet {
 		} catch (NumberFormatException ex) {
 			fouten.put("verkoopprijs", "tik een positief getal");
 		}
-		if (!Artikel.isVerkoopprijsGroterDanAankoopprijs(aankoopprijs,verkoopprijs)){
-			fouten.put("verkoopprijsKleinerDanAankoopprijs", "geef een nieuwe verkoopprijs is");
+		if (!Artikel.isVerkoopprijsGroterDanAankoopprijs(aankoopprijs,
+				verkoopprijs)) {
+			fouten.put("verkoopprijsKleinerDanAankoopprijs",
+					"geef een nieuwe verkoopprijs is");
 		}
-		if (fouten.isEmpty()){
-			String houdbaarheid = request.getParameter("food");
-			String lqfnqlfd = request.getParameter("food");
-			//Artikel artikel = new Artikel(naam,aankoopprijs,verkoopprijs);
+		if (fouten.isEmpty()) {
+			int houdbaarheid = 0;
+			int garantie = 0;
+			String soort = request.getParameter("soort");
+			if (soort == null) {
+				fouten.put("soort", "maak een keuze");
+			} else {
+				switch (soort) {
+				case "F":
+					try {
+						houdbaarheid = Integer.parseInt(request
+								.getParameter("houdbaarheid"));
+						if (!FoodArtikel.isHoudbaarheidValid(houdbaarheid)) {
+							fouten.put("houdbaarheid", "tik een positief getal");
+						}
+					} catch (NumberFormatException ex) {
+						fouten.put("houdbaarheid", "tik een positief getal");
+					}
+					break;
+				case "NF":
+					try {
+						garantie = Integer.parseInt(request
+								.getParameter("garantie"));
+						if (!NonFoodArtikel.isGarantieValid(garantie)) {
+							fouten.put("garantie",
+									"tik een positief getal of 0");
+						}
+					} catch (NumberFormatException ex) {
+						fouten.put("garantie", "tik een positief getal of 0");
+					}
+					break;
+				default:
+					fouten.put("soort", "maak een keuze");
+				}
+			}
+
+			Artikel artikel;
+			if ("F".equals(soort)) {
+				artikel = new FoodArtikel(naam, aankoopprijs, verkoopprijs,
+						houdbaarheid);
+			} else {
+				artikel = new NonFoodArtikel(naam, aankoopprijs, verkoopprijs,
+						garantie);
+			}
+
 			artikelService.create(artikel);
 			response.sendRedirect(response.encodeRedirectURL(String.format(
 					REDIRECT_URL, request.getContextPath(), artikel.getId())));
-		} else{
+		} else {
 			request.setAttribute("fouten", fouten);
 			request.getRequestDispatcher(VIEW).forward(request, response);
 		}
 	}
-
 }

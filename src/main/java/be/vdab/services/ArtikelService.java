@@ -10,9 +10,7 @@ public class ArtikelService {
 	private final ArtikelDAO artikelDAO = new ArtikelDAO();
 
 	public Artikel read(long id) {
-
 		return artikelDAO.read(id);
-
 	}
 
 	public void create(Artikel artikel) {
@@ -32,5 +30,9 @@ public class ArtikelService {
 		artikelDAO.algemenePrijsverhoging(factor);
 		artikelDAO.commit();
 		
+	}
+	
+	public List<Artikel> findall(){
+		return artikelDAO.findAll();
 	}
 }

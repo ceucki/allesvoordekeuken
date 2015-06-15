@@ -24,7 +24,11 @@ public class ArtikelDAO extends AbstractDAO {
 
 	public void algemenePrijsverhoging(BigDecimal factor) {
 		getEntityManager().createNamedQuery("Docent.algemeneOpslag")
-		.setParameter("factor", factor)
-		.executeUpdate();		
+				.setParameter("factor", factor).executeUpdate();
+	}
+
+	public List<Artikel> findAll() {
+		return getEntityManager().createNamedQuery("Artikel.findAll",
+				Artikel.class).getResultList();
 	}
 }
