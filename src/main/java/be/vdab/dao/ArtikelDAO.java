@@ -31,4 +31,19 @@ public class ArtikelDAO extends AbstractDAO {
 		return getEntityManager().createNamedQuery("Artikel.findAll",
 				Artikel.class).getResultList();
 	}
+
+	public List<Artikel> findArtikelInArtikelGroep(int artikelgroepid) {
+		return getEntityManager()
+				.createNamedQuery("Artikel.findArtikelInArtikelGroep",
+						Artikel.class)
+				.setParameter("artikelgroepid", artikelgroepid)
+				.setHint(
+						"javax.persistence.loadgraph",
+						getEntityManager().createEntityGraph(
+								"Artikel.metArtikelGroep")).getResultList();
+	}
+	
+	public List<Artikel> findAllArtikelsAndArtikelGroep(){
+		return getEntityManager().createNamedQuery("Artikel.findAll", Artikel.class).setHint("javax.persistence.loadgraph", getEntityManager().createEntityGraph("Artikel.metArtikelGroep")).getResultList();
+	}
 }

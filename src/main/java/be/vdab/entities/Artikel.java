@@ -11,11 +11,15 @@ import javax.persistence.CollectionTable;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -25,6 +29,7 @@ import be.vdab.valueobjects.Korting;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "artikels")
 @DiscriminatorColumn(name = "soort")
+@NamedEntityGraph(name = "Artikel.metArtikelGroep", attributeNodes = @NamedAttributeNode("artikelGroep"))
 public abstract class Artikel implements Serializable {
 
 	/**
@@ -37,11 +42,15 @@ public abstract class Artikel implements Serializable {
 	private String naam;
 	private BigDecimal aankoopprijs;
 	private BigDecimal verkoopprijs;
-	
+
 	@ElementCollection
 	@CollectionTable(name = "kortingen", joinColumns = @JoinColumn(name = "artikelid"))
 	@OrderBy("artikelid")
 	private Set<Korting> kortingen;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "artikelgroepid")
+	private ArtikelGroep artikelGroep;
 
 	protected Artikel() {
 	};
@@ -50,11 +59,20 @@ public abstract class Artikel implements Serializable {
 		return Collections.unmodifiableSet(kortingen);
 	}
 
-	public Artikel(String naam, BigDecimal aankoopprijs, BigDecimal verkoopprijs) {
+	public Artikel(String naam, BigDecimal aankoopprijs, BigDecimal verkoopprijs, ArtikelGroep artikelgroep) {
 		setNaam(naam);
 		setAankoopprijs(aankoopprijs);
 		setVerkoopprijs(verkoopprijs);
 		kortingen = new LinkedHashSet<>();
+		setArtikelGroep(artikelgroep);
+	}
+
+	public ArtikelGroep getArtikelGroep() {
+		return artikelGroep;
+	}
+
+	public void setArtikelGroep(ArtikelGroep artikelGroep) {
+		this.artikelGroep = artikelGroep;
 	}
 
 	public static boolean isNaamValid(String naam) {
@@ -70,9 +88,10 @@ public abstract class Artikel implements Serializable {
 		return verkoopprijs != null
 				& verkoopprijs.compareTo(BigDecimal.ZERO) >= 0;
 	}
-	
-	public static boolean isVerkoopprijsGroterDanAankoopprijs(BigDecimal aankoopprijs, BigDecimal verkoopprijs){
-		return verkoopprijs.compareTo(aankoopprijs) >=0;
+
+	public static boolean isVerkoopprijsGroterDanAankoopprijs(
+			BigDecimal aankoopprijs, BigDecimal verkoopprijs) {
+		return verkoopprijs.compareTo(aankoopprijs) >= 0;
 	}
 
 	public long getId() {
@@ -91,19 +110,19 @@ public abstract class Artikel implements Serializable {
 		this.naam = naam;
 	}
 
-	public  BigDecimal getAankoopprijs() {
+	public BigDecimal getAankoopprijs() {
 		return aankoopprijs;
 	}
 
 	public void setAankoopprijs(BigDecimal aankoopprijs) {
-		if (! isAankoopprijsValid(aankoopprijs)){
+		if (!isAankoopprijsValid(aankoopprijs)) {
 			throw new IllegalArgumentException();
 		}
 		this.aankoopprijs = aankoopprijs;
 	}
 
 	public BigDecimal getVerkoopprijs() {
-		if (! isVerkoopprijsValid(verkoopprijs)){
+		if (!isVerkoopprijsValid(verkoopprijs)) {
 			throw new IllegalArgumentException();
 		}
 		return verkoopprijs;
@@ -117,5 +136,19 @@ public abstract class Artikel implements Serializable {
 		return verkoopprijs.subtract(aankoopprijs)
 				.divide(aankoopprijs, 2, RoundingMode.HALF_UP)
 				.multiply(BigDecimal.valueOf(100));
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Artikel)) {
+			return false;
+		}
+		Artikel anderArtikel = (Artikel) object;
+		return naam.equalsIgnoreCase(anderArtikel.naam);
+	}
+
+	@Override
+	public int hashCode() {
+		return naam.toUpperCase().hashCode();
 	}
 }

@@ -30,9 +30,9 @@ public class NonFoodArtikel extends Artikel {
 	};
 
 	public NonFoodArtikel(String naam, BigDecimal aankoopprijs,
-			BigDecimal verkoopprijs, int garantie) {
-		super(naam, aankoopprijs, verkoopprijs);
-		setGarantie(garantie);
+			BigDecimal verkoopprijs, ArtikelGroep artikelgroep, int garantie) {
+		super(naam, aankoopprijs, verkoopprijs,artikelgroep);
+		setGarantie(garantie);		
 	};
 	
 	public static boolean isGarantieValid(int garantie) {

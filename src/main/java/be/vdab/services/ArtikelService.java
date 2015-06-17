@@ -35,4 +35,14 @@ public class ArtikelService {
 	public List<Artikel> findall(){
 		return artikelDAO.findAll();
 	}
+	
+	public List<Artikel> findArtikelInArtikelGroep(int artikelgroepid){
+		return artikelDAO.findArtikelInArtikelGroep(artikelgroepid);
+	}
+	
+	public List<Artikel> findAllArtikelsAndArtikelGroep(){
+		return artikelDAO.findAllArtikelsAndArtikelGroep();
+	}
+	
+	
 }

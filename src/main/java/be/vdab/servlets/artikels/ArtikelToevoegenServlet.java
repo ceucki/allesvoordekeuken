@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import be.vdab.entities.Artikel;
+import be.vdab.entities.ArtikelGroep;
 import be.vdab.entities.FoodArtikel;
 import be.vdab.entities.NonFoodArtikel;
+import be.vdab.services.ArtikelGroepService;
 import be.vdab.services.ArtikelService;
 
 /**
@@ -24,6 +26,7 @@ public class ArtikelToevoegenServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String VIEW = "/WEB-INF/JSP/artikels/toevoegen.jsp";
 	private static final transient ArtikelService artikelService = new ArtikelService();
+	private static final transient ArtikelGroepService artikelGroepService = new ArtikelGroepService();
 	private static final String REDIRECT_URL = "%s/artikels/zoekenopnummer.htm?id=%d";
 
 	/**
@@ -32,6 +35,7 @@ public class ArtikelToevoegenServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("artikelgroepen", artikelGroepService.findAll());
 		request.getRequestDispatcher(VIEW).forward(request, response);
 	}
 
@@ -70,6 +74,10 @@ public class ArtikelToevoegenServlet extends HttpServlet {
 			fouten.put("verkoopprijsKleinerDanAankoopprijs",
 					"geef een nieuwe verkoopprijs is");
 		}
+		String artikelgroepid = request.getParameter("artikelgroepen");
+		if (artikelgroepid==null){
+			fouten.put("artikelgroepen", "verplicht");
+		}
 		if (fouten.isEmpty()) {
 			int houdbaarheid = 0;
 			int garantie = 0;
@@ -107,14 +115,20 @@ public class ArtikelToevoegenServlet extends HttpServlet {
 			}
 
 			Artikel artikel;
+			ArtikelGroep artikelgroep
+			= artikelGroepService.read(Integer.parseInt(artikelgroepid));
+			
 			if ("F".equals(soort)) {
-				artikel = new FoodArtikel(naam, aankoopprijs, verkoopprijs,
+				artikel = new FoodArtikel(naam, aankoopprijs, verkoopprijs, artikelgroep,
 						houdbaarheid);
+				
 			} else {
-				artikel = new NonFoodArtikel(naam, aankoopprijs, verkoopprijs,
+				artikel = new NonFoodArtikel(naam, aankoopprijs, verkoopprijs, artikelgroep,
 						garantie);
 			}
-
+			
+			artikel.setArtikelGroep(artikelGroepService.read(Integer.parseInt(artikelgroepid)));
+			
 			artikelService.create(artikel);
 			response.sendRedirect(response.encodeRedirectURL(String.format(
 					REDIRECT_URL, request.getContextPath(), artikel.getId())));

@@ -18,4 +18,12 @@ set d.verkoopprijs = d.verkoopprijs * :factor
 	<named-query name="Artikel.findAll">
 		<query> select d from Artikel d order by d.naam</query>
 	</named-query>
+	<named-query name="ArtikelGroep.findAll">
+		<query> select d from ArtikelGroep d order by d.naam
+	</query>
+	</named-query>
+	<named-query name="Artikel.findArtikelInArtikelGroep">
+	<query>
+	select d from Artikel d where d.artikelGroep in (:artikelgroepid) order by d.naam
+	</query></named-query>
 </entity-mappings>

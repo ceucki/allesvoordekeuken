@@ -6,5 +6,6 @@
 <v:head title='Alles Voor De Keuken' />
 <body>
 <v:menu />
+<img src='<c:url value="/images/logo1.jpg"/>'  alt="logo" />
 </body>
 </html>

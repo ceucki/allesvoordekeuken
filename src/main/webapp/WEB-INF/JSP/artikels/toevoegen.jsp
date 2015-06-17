@@ -22,7 +22,18 @@
 		</label> <label><input type='radio' name="soort" value='NF'
 			id="nonfood" /> Non-Food</label><br /> <label>Garantie: <span>${fouten.garantie}</span><input
 			name="garantie" value="${param.garantie}" />
-		</label> <input type='submit' value='Toevoegen' id='toevoegknop'>
+		</label> <label>Artikelgroep: <span>${fouten.artikelgroepen}</span>
+			<select name='artikelgroepen' size="${artikelgroepen.size()}"
+			required>
+				<c:forEach items="${ artikelgroepen}" var="artikelgroep">
+					<option value="${artikelgroep.id}" ${artikelgroep.id == param.artikelgroepen ? 'selected' : ''}
+						>
+						${artikelgroep.naam}</option>
+				</c:forEach>
+		</select>
+		<input type='submit' value='Toevoegen' id='toevoegknop'> 
+		</label>
+		
 	</form>
 	<script>
 		document.getElementById('toevoegform').onsubmit = function() {
